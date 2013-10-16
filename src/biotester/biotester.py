@@ -1,8 +1,9 @@
 
-from concurrent.futures import ThreadPoolExecutor
+from util.iteratingexecutor import IteratingThreadPoolExecutor
 
 from genetic.pool import Pool
 from genetic.bio import Bio
+from genetic.pooltracker import PoolTracker
 
 class BioTester(object):
     
@@ -18,7 +19,7 @@ class BioTester(object):
         
         self.workers = 4
         
-        self.executor = ThreadPoolExecutor(max_workers = self.workers)
+        self.executor = IteratingThreadPoolExecutor(max_workers = self.workers)
         
     
     def set_pool(self, pool):
@@ -36,32 +37,12 @@ class BioTester(object):
             raise ValueError("pool is not set")
         
         pool = self.pool.clone()
-        state = "pending"
-        self.biopools.append(bio, pool, state)
-    
-    
-    def run(self):
+        tracker = PoolTracker()
         
-        done = False
+        bio.set_pool(pool)
+        bio.set_tracker(tracker)
         
-        while not done:
-            done = True
-            
-            for bio, pool, state in self.biopools:
-                if state == "pending":
-                    
-                    self.workers.submit(bio.iterate, pool)
-                    
-            
-                elif state == "working":
-                    continue
-                
-                elif state == "finished":
-                    continue
-            
+        self.executor.submit(bio)
         
+        return tracker
     
-    def new_bio_id(self):
-        bio_id = self.bio_id
-        self.bio_id += 1
-        return bio_id
