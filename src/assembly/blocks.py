@@ -46,5 +46,9 @@ class Blocks(object):
     
     def __len__(self):
         return len(self.blocks)
+    
+    
+    def __iter__(self):
+        return iter(self.blocks.values())
         
         

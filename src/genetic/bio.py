@@ -28,17 +28,25 @@ class Bio(object):
     def set_tracker(self, tracker):
         self.tracker = tracker
         self.tracker.set_bio(self)
-        
     
-    def __next___(self):
+    
+    def __iter__(self):
+        return self
+    
+    
+    def __next__(self):
         if self.is_done():
             raise StopIteration()
         
         self.iterate(self.pool)
         
+        return self.current_generation
+
     
     def iterate(self, pool):
-        
+        if pool is None:
+            raise ValueError("Pool is not set")
+
         # create zombies
         self.do_mutate(pool)
         
@@ -58,7 +66,7 @@ class Bio(object):
         
     
     def do_mutate(self, pool):
-        count = len(pool)
+        count = len(pool) * self.mutation_rate
         
         for _ in range(count):
             old_chrom = pool.pick_random()
@@ -69,7 +77,7 @@ class Bio(object):
         
     
     def do_crossover(self, pool):
-        count = len(pool)
+        count = len(pool) * self.crossover_rate
         
         for _ in range(count):
             p1 = pool.pick_random()
@@ -77,7 +85,7 @@ class Bio(object):
             
             child = p1.crossover(p2)
             
-            pool.add(child)
+            #pool.add(child)
             
             
 class DummyTracker(object):

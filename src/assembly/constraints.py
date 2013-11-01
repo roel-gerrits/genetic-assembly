@@ -31,8 +31,7 @@ class Constraints(object):
             if len(lower_level_blocks) == len(blocks):
                 break
             
-        
-        c.print_depencies()
+        return c
                     
 
     def set_constraint(self, block, depends):
@@ -41,7 +40,14 @@ class Constraints(object):
             
         if depends is not None:
             self.constraints[block.nr].append(depends)
-            
+    
+    
+    def get_constraints(self, block):
+        return self.constraints.get(block.nr, [])
+    
+    
+    
+    
         
     def print_depencies(self):
         retval = ""

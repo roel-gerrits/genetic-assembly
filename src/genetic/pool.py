@@ -6,7 +6,7 @@ from random import choice
 class Pool(object):
     
     def __init__(self):
-        self.pool = set()
+        self.pool = list()
         
         
     def add(self, chrom):
@@ -21,7 +21,7 @@ class Pool(object):
     
 
     def fittest(self):
-        self.pool.sort(key=operator.attrgetter('fitness'))
+        self.pool.sort(key=operator.methodcaller('fitness'))
         
         if len(self.pool) > 0:
             return self.pool[0]
@@ -30,7 +30,7 @@ class Pool(object):
     
     
     def select(self, amount):
-        self.pool.sort(key=operator.attrgetter('fitness'))
+        self.pool.sort(key=operator.methodcaller('fitness'))
         self.pool = self.pool[0:amount]
     
     
