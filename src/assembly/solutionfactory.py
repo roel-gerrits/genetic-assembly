@@ -14,6 +14,8 @@ class SolutionFactory(object):
         self.blocks = blocks
         self.constraints = Constraints.from_blocks(blocks)
         
+        self.constraints.print_depencies()
+        
     
     def random_solution(self):
         

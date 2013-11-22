@@ -1,15 +1,37 @@
 
+import random
+
 class Solution(object):
     
     def __init__(self, factory):
+        self.available_blocks = set(factory.blocks)
         self.route = list()
         self.factory = factory
         
     
     def add_block_to_route(self, block):
         self.route.append(block)
-         
     
+    
+    def complete_from_factory(self, hints):
+
+        blocks_todo = self.available_blocks.difference(self.route)
+        hints = hints.route
+        
+        while len(blocks_todo) > 0:
+            
+            candidates = self.factory.pick_candidates(blocks_todo, self.route)
+            
+            for hint in hints:
+                if hint in candidates:
+                    the_chosen_one = hint
+            else:
+                the_chosen_one = random.choice(list(candidates))
+        
+            self.add_block_to_route(the_chosen_one)
+            blocks_todo.remove(the_chosen_one)
+                        
+        
     def calc_distance(self):
         distance = 0
         prev_pos = 0
@@ -27,6 +49,15 @@ class Solution(object):
         distance += cur_pos
         
         return distance 
+    
+    
+    def splice(self, begin, end=None):
+        s = Solution(self.factory)
+        
+        for block in self.route[begin : end]:
+            s.add_block_to_route(block)
+            
+        return s
     
     
     def get_block_position(self, block):

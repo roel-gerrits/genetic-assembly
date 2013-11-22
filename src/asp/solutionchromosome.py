@@ -18,12 +18,24 @@ class SolutionChromosome(Chromosome):
     
     
     def crossover(self, other):
-        incision_point = random.randint(1, self.solution.count() - 2)
+        incision_point = random.randint(1, self.solution.count() - 1)
         
-        print (incision_point)
+        child_a = self.solution.splice(0, incision_point)
+        parent_a = self.solution.splice(incision_point)
+        child_b = other.solution.splice(0, incision_point)
+        parent_b = other.solution.splice(incision_point)
         
-        #raise NotImplementedError()
+        child_a.complete_from_factory(parent_b)
+        child_b.complete_from_factory(parent_a)
+        
+        
+        return [SolutionChromosome(child_a), SolutionChromosome(child_b)]
     
+    
+    def mutate(self):
+        factory = self.solution.factory
+        return SolutionChromosome(factory.random_solution())
+        
     
     def __repr__(self):
         return repr(self.solution)

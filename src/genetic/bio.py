@@ -1,3 +1,4 @@
+
 from genetic.pool import Pool
 
 class Bio(object):
@@ -46,6 +47,8 @@ class Bio(object):
     def iterate(self, pool):
         if pool is None:
             raise ValueError("Pool is not set")
+        
+        elite = pool.fittest()
 
         # create zombies
         self.do_mutate(pool)
@@ -53,8 +56,11 @@ class Bio(object):
         # have fun
         self.do_crossover(pool)
         
+        pool.add(elite)
+        
         # natural selection
-        pool.select(self.population_size)
+        self.do_selection(pool)
+        #pool.select(self.population_size)
         
         # happy birthday!
         self.current_generation += 1
@@ -63,10 +69,20 @@ class Bio(object):
         self.tracker.new_generation()
         self.tracker.set_population(len(pool))
         self.tracker.set_fittest(pool.fittest())
+    
+    
+    def do_selection(self, pool):
+        pool.sort()
+        pool.skim(self.population_size)
         
+        #for _ in range(len(pool)- self.population_size):
+        #    pool.remove(pool.pick_random())
+
+            
+    
     
     def do_mutate(self, pool):
-        count = len(pool) * self.mutation_rate
+        count = int(len(pool) * self.mutation_rate)
         
         for _ in range(count):
             old_chrom = pool.pick_random()
@@ -77,15 +93,19 @@ class Bio(object):
         
     
     def do_crossover(self, pool):
-        count = len(pool) * self.crossover_rate
-        
+        count = int(len(pool) * self.crossover_rate)
+
         for _ in range(count):
             p1 = pool.pick_random()
             p2 = pool.pick_random()
             
-            child = p1.crossover(p2)
+            [child1, child2] = p1.crossover(p2)
             
-            #pool.add(child)
+            pool.remove(p1)
+            pool.remove(p2)
+            
+            pool.add(child1)
+            pool.add(child2)
             
             
 class DummyTracker(object):

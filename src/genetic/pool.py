@@ -17,7 +17,10 @@ class Pool(object):
         
         
     def remove(self, chrom):
-        self.pool.remove(chrom)
+        try:
+            self.pool.remove(chrom)
+        except ValueError:
+            pass
     
 
     def fittest(self):
@@ -27,6 +30,14 @@ class Pool(object):
             return self.pool[0]
         else:
             return None
+        
+        
+    def sort(self):
+        self.pool.sort(key=operator.methodcaller('fitness'))
+        
+        
+    def skim(self, amount):
+        self.pool = self.pool[0:amount]
     
     
     def select(self, amount):
