@@ -2,6 +2,7 @@
 from genetic.chromosome import Chromosome
 import operator
 from random import choice
+import copy
 
 class Pool(object):
     
@@ -54,5 +55,9 @@ class Pool(object):
     
     
     def clone(self):
-        raise NotImplementedError()
+        p = Pool()
+        for chrom in self.pool:
+            p.add(copy.deepcopy(chrom))
+            
+        return p
     

@@ -29,6 +29,10 @@ class Bio(object):
     def set_tracker(self, tracker):
         self.tracker = tracker
         self.tracker.set_bio(self)
+        
+        
+    def get_tracker(self):
+        return self.tracker
     
     
     def __iter__(self):
